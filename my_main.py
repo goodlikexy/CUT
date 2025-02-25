@@ -5,11 +5,10 @@ from os.path import dirname as opd
 from os.path import basename as opb
 from os.path import splitext as ops
 
-#因果图
+
 import networkx as nx
 import matplotlib.pyplot as plt
 import os
-
 import tqdm
 import numpy as np
 import argparse
@@ -250,46 +249,7 @@ class CUTS(object):
                 self.log.log_metrics({"graph_discov/lr": current_graph_disconv_lr}, graph_discov_step)
                 self.log.log_metrics({"graph_discov/tau": self.gumbel_tau}, graph_discov_step)
                 self.gumbel_tau *= self.gumbel_tau_gamma
-            
-            # 在整个训练循环结束前添加因果图生成代码
-            if (epoch_i+1) == self.args.total_epoch:  # 在最后一个epoch添加因果图生成代码
-                # 创建Graph文件夹
-                graph_dir = os.path.join(self.log.log_dir, 'Graph')
-                os.makedirs(graph_dir, exist_ok=True)
-                
-                # 获取最终的因果矩阵
-                time_coef_mat = self.graph.detach().cpu().numpy()
-                prob_mat = 1 / (1 + np.exp(-time_coef_mat))  # sigmoid转换
-                
-                # 对每个时间步生成因果图
-                for t in range(time_coef_mat.shape[2]):
-                    G = nx.DiGraph()
-                    
-                    # 添加节点
-                    for i in range(self.args.n_nodes):
-                        G.add_node(i)
-                    
-                    # 添加边（根据阈值）
-                    calc, val = self.args.causal_thres.split("_")
-                    threshold = float(val)
-                    
-                    for i in range(self.args.n_nodes):
-                        for j in range(self.args.n_nodes):
-                            if prob_mat[i,j,t] > threshold:
-                                G.add_edge(i, j, weight=prob_mat[i,j,t])
-                    
-                    # 绘制因果图
-                    plt.figure(figsize=(10, 10))
-                    pos = nx.spring_layout(G)
-                    nx.draw(G, pos, with_labels=True, node_color='lightblue', 
-                           node_size=500, arrowsize=20, font_size=12)
-                    
-                    # 保存图片
-                    plt.savefig(os.path.join(graph_dir, f'causal_graph_time_{t}.png'))
-                    plt.close()
-                
-                print(f"因果图已保存至 {graph_dir}")
-            
+
             pbar.update(1)
             self.lambda_s *= self.lambda_gamma
                      

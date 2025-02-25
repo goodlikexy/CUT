@@ -287,6 +287,9 @@ def prepare_data(opt):
         data = np.zeros([opt.param.T, opt.param.N, 1])
     elif opt.name == "netsim":
         data, true_cm = load_netsim_data(**opt.param)
+    elif opt.name == "normal_segments":
+        data = np.load('data_10_26/test_d/data_processed/normal_segments.npy')
+        true_cm = None  # 如果没有真实的因果矩阵，可以设置为 None
     else:
         raise NotImplementedError
 
@@ -349,6 +352,8 @@ def main(opt: CUTSopt, device="cuda"):
         cuts = CUTS(opt.cuts, log, device=device)
         cuts.train(data, mask, original_data, true_cm)
     
+    # 新增代码：更新 opt.data.name
+    opt.data.name = "normal_segments"
                 
 
 if __name__ == "__main__":

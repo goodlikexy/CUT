@@ -1,11 +1,8 @@
 import pandas as pd
-import numpy as np
 
-# 读取数据
-data = pd.read_csv("/home/hz/projects/CUTS/UNN-main/CUTS/data/train/data/C1_csv/C1_all_1.csv")
+# 读取CSV文件
+df = pd.read_csv('/home/hz/projects/CUTS/UNN-main/CUTS/data_10_26/test_b/data/merged_output_normalized_1.csv')
 
-# 查看相关性矩阵
-correlation_matrix = data.corr()
-
-# 查看时间序列特征
-# 可以使用自相关和互相关分析
+# 获取维度
+print(f"文件维度: {df.shape}")
+# shape[0]是行数，shape[1]是列数

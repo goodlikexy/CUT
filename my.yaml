@@ -8,14 +8,10 @@ log:
   tensorboard: true
 
 data:
-  name: var
+  data:
+  name: custom_data  # 新增一个数据类型
   param:
-    links:
-        0: []
-        1: [[0, -1, 0.8, lin_f]]
-        2: [[0, -1, 0.8, lin_f], [1, -1, 0.8, lin_f]]
-    T: 1000
-    noise_sigma: [0.1,0.1]
+    path: "/home/hz/projects/CUTS/UNN-main/CUTS/data_10_26/test_b/data/merged_output_normalized_1.csv" # 您的数据文件路径
   pre_sample:
     random_missing:
       missing_var: all
@@ -30,7 +26,7 @@ reproduc:
   deterministic: true
 
 cuts:
-  n_nodes: 3
+  n_nodes: 81
   input_step: 1
   batch_size: 512
   data_dim: 1
