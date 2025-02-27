@@ -13,6 +13,7 @@ import omegaconf
 from omegaconf import OmegaConf
 from sklearn.metrics import roc_curve, roc_auc_score
 # from utils.logger import MyLogger
+import networkx as nx
 
 
 def prepross_data(data):
@@ -95,11 +96,17 @@ def plot_causal_matrix_in_training(time_coef, log, log_step, threshold=0.5, plot
         figsize=[1.5*time_coef.shape[0], 1*n])
     log.log_figures(sub_cg, name="Discovered Graph Coef", iters=log_step)
 
+    # 保存 Coefficiency 矩阵
+    np.savez("data_10_26/test_d/data_processed/discovered_graph_coef.npz", coef_matrix=np.max(time_coef, axis=2))
+
     # Show Thresholded Graph
     sub_cg = plot_causal_matrix(
         np.max(time_graph, axis=2) > threshold,
         figsize=[1.5*n, 1*n])
     log.log_figures(sub_cg, name="Discovered Graph", iters=log_step)
+
+    # 保存 Thresholded 矩阵
+    np.savez("data_10_26/test_d/data_processed/thresholded_graph.npz", thresholded_matrix=np.max(time_graph, axis=2) > threshold)
     
     
 

@@ -142,6 +142,7 @@ class CUTS(object):
 
     def train(self, data, observ_mask, original_data, true_cm=None):
 
+
         original_data = torch.from_numpy(original_data).float().to(self.device)
         observ_mask = torch.from_numpy(observ_mask).float().to(self.device)
         data = torch.from_numpy(data).float().to(self.device)
@@ -275,7 +276,6 @@ class CUTS(object):
                 auc = calc_and_log_metrics(time_prob_mat, true_cm, self.log, graph_discov_step, threshold=threshold, plot_roc=plot_roc)
                 
 
-
 def prepare_data(opt):
     if opt.name == "uniform_var":
         data, beta, true_cm = simulate_var(**opt.param)
@@ -354,7 +354,7 @@ def main(opt: CUTSopt, device="cuda"):
     
     # 新增代码：更新 opt.data.name
     opt.data.name = "normal_segments"
-                
+
 
 if __name__ == "__main__":
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
