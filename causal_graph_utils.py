@@ -52,11 +52,10 @@ class CausalGraphUtils:
         if feature_mapping is None:
             feature_mapping = {f'X{i}': f'X{i}' for i in range(len(causal_matrix))}
         
-        # 参数校验
+        # 参数校验 - 只检查是否为方阵
         assert all(len(row) == len(causal_matrix) for row in causal_matrix), "必须为方阵"
-        assert all(causal_matrix[i][j] == 0 for i in range(len(causal_matrix)) 
-                  for j in range(i+1, len(causal_matrix))), "必须为下三角矩阵"
-
+        # 移除下三角矩阵的限制
+        
         N = len(causal_matrix)
         G = nx.DiGraph()
 
