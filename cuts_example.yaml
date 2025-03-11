@@ -7,18 +7,18 @@ log:
   tensorboard: true
 
 data:
-  #name: var
-  name: normal_segments
+  name: var
+  #name: normal_segments
   param:
-    #     links:
-    #     0: []
-    #     1: [[0, -1, 0.8, lin_f]]
-    #     2: [[0, -1, 0.8, lin_f], [1, -1, 0.8, lin_f]]
-    # T: 10000
-    # noise_sigma: [0.1,0.1]   
-    T: 2800
-    N: 8
-    D: 1
+    links:
+      0: []
+      1: [[0, -1, 0.8, lin_f]]
+      2: [[0, -1, 0.8, lin_f], [1, -1, 0.8, lin_f]]
+    T: 10000
+    noise_sigma: [0.1,0.1]   
+    # T: 2800
+    # N: 8
+    # D: 1
   pre_sample:
     random_missing:
       missing_var: all
@@ -33,7 +33,7 @@ reproduc:
   deterministic: true
 
 cuts:
-  n_nodes: 8
+  n_nodes: 3
   input_step: 1
   batch_size: 512
   data_dim: 1
@@ -43,6 +43,10 @@ cuts:
   fill_policy: rate_0.1_after_10
   show_graph_every: 20
   
+  anomaly_detection:
+    n_clusters: 2
+    window_size: 5
+
   data_pred:
     model: multi_mlp
     pred_step: 1

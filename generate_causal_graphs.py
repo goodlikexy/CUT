@@ -1,47 +1,42 @@
 import numpy as np
 from causal_graph_utils import CausalGraphUtils
+import os
+import matplotlib.pyplot as plt
 
 # 创建 CausalGraphUtils 实例
 graph_utils = CausalGraphUtils()
 
-# 加载矩阵文件
-coef_data = np.load("/home/hz/projects/CUTS/UNN-main/CUTS/data_10_26/test_d/data_processed/discovered_graph_coef.npz")
-thresholded_data = np.load("/home/hz/projects/CUTS/UNN-main/CUTS/data_10_26/test_d/data_processed/thresholded_graph.npz")
-
-# 获取矩阵
-coef_matrix = coef_data['coef_matrix']
-thresholded_matrix = thresholded_data['thresholded_matrix']
-
-# 将矩阵转换为下三角矩阵
-lower_triangular_coef = graph_utils.make_lower_triangular(coef_matrix)
-lower_triangular_thresholded = graph_utils.make_lower_triangular(thresholded_matrix)
-
-# 提取相关边的位置
-edges = np.argwhere(lower_triangular_thresholded > 0)
-
-# 创建一个新的矩阵来存储权重，确保是浮点数类型
-weighted_edges = np.zeros_like(lower_triangular_thresholded, dtype=float)
-
-# 从 coef 矩阵中提取权重
-for edge in edges:
-    i, j = edge
-    # 确保从 coef 矩阵中提取的值是有效的
-    weight = lower_triangular_coef[i, j]
+def generate_causal_graphs(log_dir):
+    # 从data子文件夹读取特征映射文件
+    feature_mapping_path = os.path.join(log_dir, 'data', 'feature_mapping.txt')
+    try:
+        with open(feature_mapping_path, 'r') as f:
+            feature_names = [line.strip() for line in f.readlines()]
+        print(f"成功加载特征映射: {feature_mapping_path}")
+    except Exception as e:
+        print(f"加载特征映射失败: {str(e)}")
+        feature_names = None
     
-    # 打印调试信息
-    print(f"Edge ({i}, {j}) - Coef Weight: {weight}")
+    # 从data目录读取数据
+    data_dir = os.path.join(log_dir, 'data')
+    coef_path = os.path.join(data_dir, 'discovered_graph_coef.npz')
+    thres_path = os.path.join(data_dir, 'thresholded_graph.npz')
+    
+    coef_data = np.load(coef_path)
+    thresholded_data = np.load(thres_path)
+    
+    # 获取矩阵
+    coef_matrix = coef_data['coef_matrix']
+    thresholded_matrix = thresholded_data['thresholded_matrix']
 
-    if weight != 0:  # 只在权重不为零时赋值
-        weighted_edges[i, j] = weight
+    # 将矩阵转换为下三角矩阵
+    lower_triangular_coef = graph_utils.make_lower_triangular(coef_matrix)
 
-# 打印 weighted_edges 矩阵以检查权重
-print("Weighted Edges Matrix:")
-print(weighted_edges)
-
-# 生成因果图
-graph_utils.generate_causal_graph(
-    causal_matrix=weighted_edges,
-    filename="weighted_graph.png",
-    output_dir="/home/hz/projects/CUTS/UNN-main/CUTS/data_10_26/test_d/data_processed/",
-    threshold=0.1
-)
+    # 生成因果图并保存到日志目录
+    graph_utils.generate_causal_graph(
+        causal_matrix=lower_triangular_coef,
+        filename="weighted_causal_graph.png",
+        output_dir=log_dir,  # 直接保存到日志主目录
+        threshold=0.1
+    )
+    plt.close()

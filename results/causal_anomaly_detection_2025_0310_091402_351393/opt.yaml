@@ -1,0 +1,51 @@
+reproduc:
+  seed: 42
+  deterministic: true
+  benchmark: false
+dir_name: results
+task_name: causal_anomaly_detection_2025_0310_091402_351393
+log:
+  stdout: false
+  stderr: false
+  tensorboard: true
+data:
+  name: custom_data
+  param:
+    path: data_10_26/test_d/data_processed/normal_segments.npy
+  pre_sample:
+    random_missing:
+      seed: 42
+      missing_prob: 0.1
+      missing_var: all
+  init_fill: zoh
+cuts:
+  n_nodes: 7
+  data_dim: 1
+  input_step: 1
+  total_epoch: 100
+  show_graph_every: 20
+  batch_size: 512
+  supervision_policy: masked_before_50
+  fill_policy: rate_0.1_after_10
+  data_pred:
+    model: multi_mlp
+    pred_step: 1
+    mlp_hid: 128
+    mlp_layers: 3
+    lr_data_start: 0.0001
+    lr_data_end: 1.0e-05
+    weight_decay: 0.001
+    prob: true
+  graph_discov:
+    lr_graph_start: 0.01
+    lr_graph_end: 0.001
+    start_tau: 1.0
+    end_tau: 0.1
+    lambda_s_start: 0.1
+    lambda_s_end: 0.01
+  anomaly_detection:
+    method: amplitude
+    window_size: 5
+    threshold_ratio: 3.0
+    use_window: false
+  causal_thres: value_0.5

@@ -44,7 +44,8 @@ class CausalGraphUtils:
         if output_dir is None:
             output_dir = '/home/hz/projects/CUTS/UNN-main/CUTS/'
         
-        mapping_file = os.path.join(output_dir, 'feature_mapping.txt')
+        # 从data子目录读取特征映射文件
+        mapping_file = os.path.join(output_dir, 'data', 'feature_mapping.txt')
         feature_mapping = self.load_feature_mapping(mapping_file)
         
         # 如果没有找到映射文件，使用默认的X0, X1等
@@ -140,7 +141,9 @@ class CausalGraphUtils:
         plt.axis('off')
         plt.tight_layout()
         
-        plt.savefig(output_dir + filename, bbox_inches='tight', dpi=300)
+        # 使用os.path.join正确拼接保存路径
+        save_path = os.path.join(output_dir, filename)
+        plt.savefig(save_path, bbox_inches='tight', dpi=300)
         plt.close()
         
         return G, plt.gcf()

@@ -96,8 +96,11 @@ def plot_causal_matrix_in_training(time_coef, log, log_step, threshold=0.5, plot
         figsize=[1.5*time_coef.shape[0], 1*n])
     log.log_figures(sub_cg, name="Discovered Graph Coef", iters=log_step)
 
-    # 保存 Coefficiency 矩阵
-    np.savez("data_10_26/test_d/data_processed/discovered_graph_coef.npz", coef_matrix=np.max(time_coef, axis=2))
+    # 保存 Coefficiency 矩阵到data目录
+    data_dir = os.path.join(log.log_dir, 'data')
+    os.makedirs(data_dir, exist_ok=True)
+    coef_path = os.path.join(data_dir, 'discovered_graph_coef.npz')
+    np.savez(coef_path, coef_matrix=np.max(time_coef, axis=2))
 
     # Show Thresholded Graph
     sub_cg = plot_causal_matrix(
@@ -105,10 +108,31 @@ def plot_causal_matrix_in_training(time_coef, log, log_step, threshold=0.5, plot
         figsize=[1.5*n, 1*n])
     log.log_figures(sub_cg, name="Discovered Graph", iters=log_step)
 
-    # 保存 Thresholded 矩阵
-    np.savez("data_10_26/test_d/data_processed/thresholded_graph.npz", thresholded_matrix=np.max(time_graph, axis=2) > threshold)
-    
-    
+    # 保存 Thresholded 矩阵到data目录
+    thres_path = os.path.join(data_dir, 'thresholded_graph.npz')
+    np.savez(thres_path, thresholded_matrix=np.max(time_graph, axis=2) > threshold)
+
+    # 保存图像到日志根目录
+    plt.figure(figsize=[1.5*n, 1*n])
+    plt.imshow(np.max(time_coef, axis=2), cmap='magma')
+    plt.colorbar()
+    plt.title("Causal Graph with Coefficients")
+    plt.savefig(os.path.join(log.log_dir, 'causal_graph_coef.png'))
+    plt.close()
+
+    plt.figure(figsize=[1.5*n, 1*n])
+    plt.imshow(np.max(time_graph, axis=2), cmap='magma', vmin=0, vmax=1)
+    plt.colorbar()
+    plt.title("Causal Graph with Probabilities")
+    plt.savefig(os.path.join(log.log_dir, 'causal_graph_prob.png'))
+    plt.close()
+
+    plt.figure(figsize=[1.5*n, 1*n])
+    plt.imshow(np.max(time_graph, axis=2) > threshold, cmap='magma')
+    plt.colorbar()
+    plt.title("Thresholded Causal Graph")
+    plt.savefig(os.path.join(log.log_dir, 'causal_graph_thresholded.png'))
+    plt.close()
 
 
 def plot_causal_matrix(cmtx, class_names=None, figsize=None, vmin=None, vmax=None, show_text=True, cmap="magma"):
@@ -140,9 +164,9 @@ def plot_causal_matrix(cmtx, class_names=None, figsize=None, vmin=None, vmax=Non
                cmap=cmap, vmin=vmin, vmax=vmax)
     plt.title("Causal matrix")
     plt.colorbar()
-    # tick_marks = np.arange(len(class_names))
-    # plt.xticks(tick_marks, class_names, rotation=45)
-    # plt.yticks(tick_marks, class_names)
+    tick_marks = np.arange(len(class_names))
+    plt.xticks(tick_marks, class_names, rotation=45)
+    plt.yticks(tick_marks, class_names)
 
     # Use white text if squares are dark; otherwise black.
     threshold = cmtx.max() / 2.0
