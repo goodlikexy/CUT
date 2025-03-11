@@ -34,9 +34,9 @@ def generate_causal_graphs(log_dir):
 
     # 生成因果图并保存到日志目录
     graph_utils.generate_causal_graph(
-        causal_matrix=lower_triangular_coef,
+        causal_matrix=coef_matrix,
         filename="weighted_causal_graph.png",
         output_dir=log_dir,  # 直接保存到日志主目录
-        threshold=0.1
+        threshold=0.5
     )
     plt.close()
