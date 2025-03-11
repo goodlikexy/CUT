@@ -1,5 +1,0 @@
-X0	C1F1Delay
-X1	F1F4Delay
-X2	F2F1Delay
-X3	F4F1Delay
-X4	S1F1Delay
