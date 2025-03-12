@@ -490,6 +490,22 @@ def main(opt: CUTSopt, device="cuda"):
             except Exception as e:
                 print(f"生成因果图时出错: {str(e)}")
 
+    # 第三阶段：根因分析
+    print("阶段3：根因分析...")
+    from root_cause_analysis import analyze_root_cause
+    
+    # 执行根因分析
+    root_cause_report = analyze_root_cause(log.log_dir)
+    print("\n根因分析结果:")
+    print(root_cause_report)
+    
+    # 生成因果图
+    print("生成因果图...")
+    from generate_causal_graphs import generate_causal_graphs
+    generate_causal_graphs(log.log_dir)
+    
+    print(f"所有处理完成。结果保存在: {log.log_dir}")
+
 
 if __name__ == "__main__":
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"

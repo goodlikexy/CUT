@@ -23,7 +23,7 @@ data:
   init_fill: "zoh"  # 初始填充方法
 
 cuts:
-  n_nodes: 8  # 根据您的数据维度调整
+  n_nodes: 6  # 根据您的数据维度调整
   data_dim: 1
   input_step: 1
   total_epoch: 100
