@@ -1,0 +1,6 @@
+X0	C1F4Delay
+X1	F1F4Delay
+X2	F4C1Delay
+X3	F4F1Delay
+X4	F4S1Delay
+X5	S1F4Delay
